@@ -70,6 +70,18 @@ public class ShopController {
                 });
     }
 
+    @PutMapping(value = "/blockUser/{id}")
+    public Users blockUser(@RequestBody Users blockingUser , @PathVariable Long id){
+        return usersRepository.findById(id)
+                .map(user -> {
+                    user.setBlocked(blockingUser.isBlocked());
+                    return usersRepository.save(user);
+                }).orElseGet(() -> {
+                    blockingUser.setId(id);
+                    return usersRepository.save(blockingUser);
+                });
+    }
+
     @GetMapping(value = "/getOneGood/{id}")
     public Goods getOneGood(@PathVariable Long id){
         return goodsRepository.findById(id).orElseThrow(()->new ProductNotFoundException(id));
