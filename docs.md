@@ -1,14 +1,14 @@
 ## API for management shop
 
 ### API actions
- - [GET /rest/api/getAllGoods](#get-restapiallgoods)
- - [PUT /rest/api/updateGood/{id}](#put-restapigoodid)
- - [DELETE /rest/api/deleteGood/{id}](#delete-restapigoodid)
- - [PUT /rest/api/updateUserBalance/{id}](#put-restapiaddbalanceforuser)
- - [PUT /rest/api/blockUser/{id}](#put-restapiblockingiser)
- - [GET /rest/api/getOneGoods/{id}](#get-restapionegood)
- - [POST /rest/api/addGood}](#post-restapiaddnewgood)
- - [POST /rest/api/addCategory](#post-restapiaddnewcategory)
+ - [GET /rest/api/getAllGoods](#get-restapigetallgoods)
+ - [PUT /rest/api/updateGood/{id}](#put-restapiupdategoodid)
+ - [DELETE /rest/api/deleteGood/{id}](#delete-restapideletegoodid)
+ - [PUT /rest/api/updateUserBalance/{id}](#put-restapiupdateuserbalanceid)
+ - [PUT /rest/api/blockUser/{id}](#put-restapiblockuserid)
+ - [GET /rest/api/getOneGood/{id}](#get-restapigetonegoodid)
+ - [POST /rest/api/addGood}](#post-restapiaddgood)
+ - [POST /rest/api/addCategory](#post-restapiaddcategory)
  - [GET /rest/api/getAllUsers](#get-restapigetallusers)
 
 
