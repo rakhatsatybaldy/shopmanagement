@@ -58,7 +58,7 @@ public class ShopController {
         goodsRepository.deleteById(id);
     }
 
-    @PutMapping(value = "/updateUser/{id}")
+    @PutMapping(value = "/updateUserBalance/{id}")
     public Users updateUser(@RequestBody Users updatingUser , @PathVariable Long id){
         return usersRepository.findById(id)
                 .map(user -> {
