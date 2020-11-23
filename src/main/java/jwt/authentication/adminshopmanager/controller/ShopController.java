@@ -11,9 +11,11 @@ import jwt.authentication.adminshopmanager.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/rest/api/")
@@ -37,20 +39,18 @@ public class ShopController {
 
     @PutMapping(value = "/updateGood/{id}")
     public Goods updateGood(@RequestBody Goods updatingGood , @PathVariable Long id){
-        return goodsRepository.findById(id)
-                .map(product -> {
-                    product.setName(updatingGood.getName());
-                    product.setPrice(updatingGood.getPrice());
-                    product.setDescription(updatingGood.getDescription());
-                    product.setUrlOfPicture(updatingGood.getUrlOfPicture());
-                    product.setCategories(updatingGood.getCategories());
-                    product.setAmount(updatingGood.getAmount());
-                    return goodsRepository.save(product);
-                })
-                .orElseGet(() -> {
-                    updatingGood.setId(id);
-                    return goodsRepository.save(updatingGood);
-                });
+            return goodsRepository.findById(id)
+                    .map(product -> {
+                        product.setName(updatingGood.getName());
+                        product.setPrice(updatingGood.getPrice());
+                        product.setDescription(updatingGood.getDescription());
+                        product.setUrlOfPicture(updatingGood.getUrlOfPicture());
+                        product.setCategories(updatingGood.getCategories());
+                        product.setAmount(updatingGood.getAmount());
+                        return goodsRepository.save(product);
+                    })
+                    .orElseThrow(()->new ProductNotFoundException(id));
+
     }
 
     @DeleteMapping(value = "/deleteGood/{id}")
@@ -64,10 +64,7 @@ public class ShopController {
                 .map(user -> {
                     user.setBalance(updatingUser.getBalance());
                     return usersRepository.save(user);
-                }).orElseGet(() -> {
-                    updatingUser.setId(id);
-                    return usersRepository.save(updatingUser);
-                });
+                }).orElseThrow(()-> new UsernameNotFoundException(updatingUser.getEmail()));
     }
 
     @PutMapping(value = "/blockUser/{id}")
@@ -76,10 +73,7 @@ public class ShopController {
                 .map(user -> {
                     user.setBlocked(blockingUser.isBlocked());
                     return usersRepository.save(user);
-                }).orElseGet(() -> {
-                    blockingUser.setId(id);
-                    return usersRepository.save(blockingUser);
-                });
+                }).orElseThrow(()-> new UsernameNotFoundException(blockingUser.getEmail()));
     }
 
     @GetMapping(value = "/getOneGood/{id}")
