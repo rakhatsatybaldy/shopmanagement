@@ -4,14 +4,14 @@ package jwt.authentication.adminshopmanager.controller;
 import jwt.authentication.adminshopmanager.entity.Categories;
 import jwt.authentication.adminshopmanager.entity.Goods;
 import jwt.authentication.adminshopmanager.entity.Users;
-import jwt.authentication.adminshopmanager.exception.ProductNotFoundException;
+import jwt.authentication.adminshopmanager.exceptions.GoodRequestException;
+import jwt.authentication.adminshopmanager.exceptions.UserRequestException;
 import jwt.authentication.adminshopmanager.repository.CategoriesRepository;
 import jwt.authentication.adminshopmanager.repository.GoodsRepository;
 import jwt.authentication.adminshopmanager.repository.UsersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,7 +39,8 @@ public class ShopController {
 
     @PutMapping(value = "/updateGood/{id}")
     public Goods updateGood(@RequestBody Goods updatingGood , @PathVariable Long id){
-            return goodsRepository.findById(id)
+        Optional<Goods> good = goodsRepository.findById(id);
+            return good
                     .map(product -> {
                         product.setName(updatingGood.getName());
                         product.setPrice(updatingGood.getPrice());
@@ -48,37 +49,44 @@ public class ShopController {
                         product.setCategories(updatingGood.getCategories());
                         product.setAmount(updatingGood.getAmount());
                         return goodsRepository.save(product);
-                    })
-                    .orElseThrow(()->new ProductNotFoundException(id));
+                    }).orElseThrow(() ->
+                        new GoodRequestException("This good does not exist!")
+                    );
 
     }
 
     @DeleteMapping(value = "/deleteGood/{id}")
     public void deleteGood(@PathVariable Long id){
-        goodsRepository.deleteById(id);
+        try {
+            goodsRepository.deleteById(id);
+        }catch (Exception e){
+            throw new GoodRequestException("This good does not exist!");
+        }
     }
 
     @PutMapping(value = "/updateUserBalance/{id}")
     public Users updateUser(@RequestBody Users updatingUser , @PathVariable Long id){
-        return usersRepository.findById(id)
-                .map(user -> {
-                    user.setBalance(updatingUser.getBalance());
-                    return usersRepository.save(user);
-                }).orElseThrow(()-> new UsernameNotFoundException(updatingUser.getEmail()));
+        Optional<Users> user = usersRepository.findById(id);
+        return user.map(u -> {
+            u.setBalance(updatingUser.getBalance());
+            return usersRepository.save(u);
+        }).orElseThrow(() -> new UserRequestException("This user does not exist!"));
     }
 
     @PutMapping(value = "/blockUser/{id}")
     public Users blockUser(@RequestBody Users blockingUser , @PathVariable Long id){
-        return usersRepository.findById(id)
-                .map(user -> {
-                    user.setBlocked(blockingUser.isBlocked());
-                    return usersRepository.save(user);
-                }).orElseThrow(()-> new UsernameNotFoundException(blockingUser.getEmail()));
+        Optional<Users> user = usersRepository.findById(id);
+        return user.map(u -> {
+            u.setBlocked(blockingUser.isBlocked());
+            return usersRepository.save(u);
+        }).orElseThrow(()-> new UserRequestException("This user does not exist!"));
+
     }
 
     @GetMapping(value = "/getOneGood/{id}")
-    public Goods getOneGood(@PathVariable Long id){
-        return goodsRepository.findById(id).orElseThrow(()->new ProductNotFoundException(id));
+    public Goods getOneGood(@PathVariable("id") Long id){
+        Optional<Goods> good = goodsRepository.findById(id);
+        return good.orElseThrow(()->new GoodRequestException("Good does not exist!"));
     }
 
     @PostMapping(value = "/addGood")

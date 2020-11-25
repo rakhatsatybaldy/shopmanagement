@@ -1,29 +1,29 @@
 package jwt.authentication.adminshopmanager.config;
 
-import jwt.authentication.adminshopmanager.entity.UserEntity;
+import jwt.authentication.adminshopmanager.entity.Roles;
+import jwt.authentication.adminshopmanager.entity.Users;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.Collections;
+import java.util.List;
 
 public class CustomUserDetails implements UserDetails {
     private String login;
     private String password;
-    private Collection<? extends GrantedAuthority> grantedAuthorities;
+    private List<Roles> roles;
 
-    public static CustomUserDetails fromUserEntityToCustomUserDetails(UserEntity userEntity) {
+    public static CustomUserDetails fromUserEntityToCustomUserDetails(Users user) {
         CustomUserDetails c = new CustomUserDetails();
-        c.login = userEntity.getLogin();
-        c.password = userEntity.getPassword();
-        c.grantedAuthorities = Collections.singletonList(new SimpleGrantedAuthority(userEntity.getRoleEntity().getName()));
+        c.login = user.getEmail();
+        c.password = user.getPassword();
+        c.roles = user.getRoles();
         return c;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return grantedAuthorities;
+        return roles;
     }
 
     @Override
