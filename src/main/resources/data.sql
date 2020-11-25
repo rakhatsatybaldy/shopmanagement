@@ -5,4 +5,4 @@ INSERT INTO users (user_id , user_email , user_password , balance , user_address
 
 
 INSERT INTO users_roles (users_user_id , roles_role_id) VALUES (2 , 2);
--- password id "passwd"
+-- password is "passwd"
